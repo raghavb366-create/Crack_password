@@ -10,7 +10,7 @@
 # methods that people use to guess other people's passwords. To see detailed written
 # instructions for this project, visit
 # https://www.sciencebuddies.org/science-fair-projects/project-ideas/CompSci_p046/computer-science/password-security-how-easily-can-your-password-be-hacked
-#
+#xs
 # If you use this program, or a modified version of it, for a science project,
 # make sure to credit Science Buddies. Using somebody else's code without giving
 # them credit is plagiarism, just like if you copied their writing.
