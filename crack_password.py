@@ -24,6 +24,7 @@
 #Tell Python we want to use some functions it doesn't always use
 import sys, time, hashlib
 from array import *
+from itertools import product
 
 # Ask the user if they want the onscreen instructions
 yesno = input("Do you want the program to pause at each step so you have time to read the instructions? (type yes or no): ")
@@ -93,39 +94,25 @@ def check_userpass(which_password, password):
     match which_password:
         case 0:
             if password == password0:
-            result = True
+                result = True
         case 1:
             if MD5me(password) == password1:
-            result = True
-
-
-    if (0 == which_password):
-        if password == password0:
-            result = True
-
-    if (1 == which_password):
-        if MD5me(password) == password1:
-            result = True
-
-    if (2 == which_password):
-        if (MD5me(password) == password2):
-            result = True
-
-    if (3 == which_password):
-        if (MD5me(password) == password3):
-            result = True
-
-    if (4 == which_password):
-        if (MD5me(password) == password4):
-            result = True
-            
-    if (5 == which_password):
-        if (MD5me(password) == password5):
-            result = True
-            
-    if (6 == which_password):
-        if (MD5me(password) == password6):
-            result = True
+                result = True
+        case 2:
+            if (MD5me(password) == password2):
+                result = True
+        case 3:
+            if (MD5me(password) == password3):
+                result = True
+        case 4:
+            if (MD5me(password) == password4):
+                result = True
+        case 5:
+            if (MD5me(password) == password5):
+                result = True
+        case 6:
+            if (MD5me(password) == password6):
+                result = True
             
     return result
 
@@ -183,7 +170,7 @@ def search_method_1(num_digits):
     while still_searching and a<(10**num_digits):
         ourguess = leading_zeroes(a,num_digits)
         # uncomment the next line to print each guess, this can help with debugging
-        print(ourguess)
+        # print(ourguess)
         tests = tests + 1
         totalguesses = totalguesses + 1
         if (check_userpass(which_password, ourguess)):
@@ -211,59 +198,32 @@ def search_method_1(num_digits):
 
 def search_method_2(num_pass_wheels):
     global totalguesses
-    result = False
+    
+    print(f"\nUsing optimized method 2 with {num_pass_wheels} characters.")
+    
+    # Pre-optimized character set as tuple for faster access
+    WHEEL = tuple(" ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+    
     starttime = time.time()
     tests = 0
-    still_searching = True
-    print()
-    print("Using method 2 and searching with "+str(num_pass_wheels)+" characters.")
-    wheel = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    # we only allow up to 8 wheels for each password for now
-    if (num_pass_wheels > 8):
-        print("Unable to handle the request. No more than 8 characters for a password")
-        still_searching = False
-    else:
-        if show_instructions:
-            print("WARNING: a brute-force search can take a long time to run!")
-            print("Try letting this part of the program run for a while (even overnight).")
-            print("Press ctrl+C to stop the program.")
-            print("Read the comments in Method 2 of the program for more information.")
-            print()
-    
-    # set all of the wheels to the first position
-    pass_wheel_array=array('i',[1,0,0,0,0,0,0,0,0])
-        
-    while still_searching:
-        ourguess_pass = ""
-        for i in range(0,num_pass_wheels):  # once for each wheel
-            if pass_wheel_array[i] > 0:
-                ourguess_pass = wheel[pass_wheel_array[i]] + ourguess_pass
-        # uncomment the next line to print each guess, this can help with debugging
-        # and to understand why this part of the program takes so long to run!
-        # print ("trying ["+ourguess_pass+"]")
+    result = False
+    for combination in product(WHEEL, repeat=num_pass_wheels): #Combination is part of a library, and it allows for a faster iteration.
+         # Skip empty password if first char is space
+        combination = combination[::-1] # Reverses the tuple because combination always generates at the end of one.
+        if combination[0] == ' ':
+            continue
+        combination = filter(str.strip,combination) # gets rid of the whitespace inside of the tuple, and leaves the characters there.
+        ourguess_pass = ''.join(combination) #Makes the tuple into a string to pass.
         if (check_userpass(which_password, ourguess_pass)):
             print ("Success! Password  "+str(which_password)+" is " + ourguess_pass)
-            still_searching = False   # we can stop now - we found it!
-            result = True
-        #else:
-            #print ("Darn. " + ourguess + " is NOT the password.")
-        tests = tests + 1
-        totalguesses = totalguesses + 1
-        
-# spin the rightmost wheel and if it changes, spin the next one over and so on
-        carry = 1
-        for i in range(0,num_pass_wheels): # once for each wheel
-            pass_wheel_array[i] = pass_wheel_array[i] + carry
-            carry = 0
-            if pass_wheel_array[i] > 62:
-                pass_wheel_array[i] = 1
-                carry = 1
-                if i == (num_pass_wheels-1):
-                    still_searching = False
-
+            report_search_time(tests, time.time()-starttime)
+            return True
+          
+        tests += 1
     seconds = time.time()-starttime
+    print(time.time()-starttime)
     report_search_time(tests, seconds)
-    return result
+    return False
 
 # *** METHOD 3 ***
 #
@@ -549,7 +509,7 @@ def main(argv=None):
         print("Method 1 (4 digit) did not work!")
         if show_instructions:
             input("Press enter to continue.")
-        foundit = search_method_2(6)
+        foundit = search_method_2(4)
     # Still looking? Try 7 digit numbers
     if not foundit:
         print("Method 2 (6 digits) did not work!")
