@@ -185,16 +185,11 @@ def search_method_1(num_digits):
     report_search_time(tests, seconds)
     return result
 
-# *** METHOD 2 ***
+# *** OPTIMIZED METHOD 2 - Raghav ***
 #
-# search method 2 is a simulation of a letter-style combination lock. Each 'wheel' has the
-# letters A-Z, a-z and 0-9 on it as well as a blank. The idea is that we have a number of
-# wheels for a user name and password and we try each possible combination.
-#
-# This method can take a very long time to run for longer passwords! Can you figure out why?
-# Hint: how many possible passwords are there using this method? How many guesses per second
-# has your program averaged using the other methods? Given that information, how long would it
-# take to guess every possible combination for an 8-character password?
+# Search method 2 is a brute force using itertools, essentially looping through
+# characters from the wheel until it reaches the upper limit of the characters
+# given. Quicker than the original because of itertools product.
 
 def search_method_2(num_pass_wheels):
     global totalguesses
