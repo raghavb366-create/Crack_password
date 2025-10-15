@@ -10,11 +10,9 @@
 # methods that people use to guess other people's passwords. To see detailed written
 # instructions for this project, visit
 # https://www.sciencebuddies.org/science-fair-projects/project-ideas/CompSci_p046/computer-science/password-security-how-easily-can-your-password-be-hacked
-#xs
 # If you use this program, or a modified version of it, for a science project,
 # make sure to credit Science Buddies. Using somebody else's code without giving
 # them credit is plagiarism, just like if you copied their writing.
-#
 # You'll notice that several parts of the code have places where 
 # print() functions have been turned into comments. You might want to uncomment
 # these print statements when debugging your program (or add more of your own in
@@ -72,17 +70,17 @@ totalguesses = 0
 
 ## Convert a string into MD5 hash
 def MD5me(s):
-    result = s.encode("utf-8")
-    result = hashlib.md5(result).hexdigest()
+    result = s.encode("utf-8") #Raghav - Converts a string into a sequence of bytes using UTF-8 encoding
+    result = hashlib.md5(result).hexdigest() #Raghav - Turns this sequence of bytes into a MD5 hash object, then returns it as a hexadecimal string.
     return result
 
 # Takes a number from 0 on up and the number of digits we want it to have. It uses that
 # number of digits to make a string like "0000" if we wanted 4 or "00000" if we wanted
 # 5, converts our input number to a character string, sticks them together and then returns
-# the number we started with, with extra zeroes stuck on the beginning. 
-def leading_zeroes(n, zeroes):
-    t=("0"*zeroes)+str(n)
-    t=t[-zeroes:]
+# the number we started with, with extra zeroes stuck on the beginning, maxing out on the. 
+def leading_zeroes(n, length):
+    t=("0"*length)+str(n)
+    t=t[-length:] #Raghav - Adds 0's behind the current string n until it reaches length.
     return t
 
 # This function checks if the MD5 hash value of the password you have guessed equals
@@ -92,6 +90,14 @@ def check_userpass(which_password, password):
     global password4, password5, password6
     
     result = False
+    match which_password:
+        case 0:
+            if password == password0:
+            result = True
+        case 1:
+            if MD5me(password) == password1:
+            result = True
+
 
     if (0 == which_password):
         if password == password0:
@@ -177,7 +183,7 @@ def search_method_1(num_digits):
     while still_searching and a<(10**num_digits):
         ourguess = leading_zeroes(a,num_digits)
         # uncomment the next line to print each guess, this can help with debugging
-        # print(ourguess)
+        print(ourguess)
         tests = tests + 1
         totalguesses = totalguesses + 1
         if (check_userpass(which_password, ourguess)):
