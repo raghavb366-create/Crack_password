@@ -63,6 +63,7 @@ password6 = ""
 totalguesses = 0
 
 
+
 #--------------- extra helper functions -------------------
 # These will be used by our search routines later on. We'll get these defined and out
 # of the way. The actual search program is called "main" and will be the last one
@@ -145,6 +146,13 @@ def make_human_readable(n):
 def cleanup (s):
     s = s.strip()
     return s
+# Opened file - Raghav, just opening the file in one place rather than in method 3 or 4 each time.
+f = open("passwords.txt")
+words = f.readlines()
+f.close
+number_of_words = len(words)
+for i in range(0, number_of_words):
+        words[i] = cleanup(words[i])
 
 ## A little helper program that capitalizes the first letter of a word
 def Cap (s):
@@ -202,7 +210,7 @@ def search_method_2(num_pass_wheels):
     starttime = time.time()
     tests = 0
     result = False
-    for combination in product(WHEEL, repeat=num_pass_wheels): #Combination is part of a library, and it allows for a faster iteration.
+    for combination in product(WHEEL, repeat=num_pass_wheels): #Product is part of a library, and it allows for a faster iteration.
          # Skip empty password if first char is space
         combination = combination[::-1] # Reverses the tuple because combination always generates at the end of one.
         if combination[0] == ' ':
@@ -211,6 +219,7 @@ def search_method_2(num_pass_wheels):
         ourguess_pass = ''.join(combination) #Makes the tuple into a string to pass.
         if (check_userpass(which_password, ourguess_pass)):
             print ("Success! Password  "+str(which_password)+" is " + ourguess_pass)
+            tests += 1
             report_search_time(tests, time.time()-starttime)
             return True
           
@@ -230,21 +239,20 @@ def search_method_2(num_pass_wheels):
 # sometimes they're not fit for polite company.
 def search_method_3(file_name):
     global totalguesses
+    global words
+    global number_of_words
     result = False
     
     # Start by reading the list of words into a Python list
-    f = open(file_name)
-    words = f.readlines()
-    f.close
+   
     # We need to know how many there are
-    number_of_words = len(words)
+  
     print()
     print("Using method 3 with a list of "+str(number_of_words)+" words...")
     
     ## Depending on the file system, there may be extra characters before
     ## or after the words. 
-    for i in range(0, number_of_words):
-        words[i] = cleanup(words[i])
+  
 
     # Let's try each one as the password and see what happens
     starttime = time.time()
@@ -258,26 +266,25 @@ def search_method_3(file_name):
         # print("Guessing: "+ourguess_pass)
         # Try it the way it is in the word list
         if (check_userpass(which_password, ourguess_pass)):
-            print ("Success! Password "+str(which_password)+" is " + ourguess_pass)
-            still_searching = False   # we can stop now - we found it!
-            result = True
+            print ("Success! Password  "+str(which_password)+" is " + ourguess_pass)
+            tests += 1
+            report_search_time(tests, time.time()-starttime)
+            return True
         #else:
             #print ("Darn. " + ourguess_pass + " is NOT the password.")
         tests = tests + 1
         totalguesses = totalguesses + 1
         # Now let's try it with the first letter capitalized
-        if still_searching:
-            ourguess_pass = Cap(ourguess_pass)
-            # uncomment the next line to print the current guess
-            # print("Guessing: "+ourguess_pass)
-            if (check_userpass(which_password, ourguess_pass)):
-                print ("Success! Password "+str(which_password)+" is " + ourguess_pass)
-                still_searching = False   # we can stop now - we found it!
-                result = True
-            #else:
-                #print ("Darn. " + ourguess_pass + " is NOT the password.")
-            tests = tests + 1
-            totalguesses = totalguesses + 1
+        ourguess_pass = Cap(ourguess_pass)
+        if (check_userpass(which_password, ourguess_pass)):
+            print ("Success! Password  "+str(which_password)+" is " + ourguess_pass)
+            tests += 1
+            report_search_time(tests, time.time()-starttime)
+            return True
+        #else:
+            #print ("Darn. " + ourguess_pass + " is NOT the password.")
+        tests = tests + 1
+        totalguesses = totalguesses + 1
 
         word1count = word1count + 1
         if (word1count >=  number_of_words):
