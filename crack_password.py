@@ -229,7 +229,8 @@ def search_method_2(num_pass_wheels):
     report_search_time(tests, seconds)
     return False
 
-# *** METHOD 3 ***
+# *** METHOD 3 *** - Optimized by Raghav, got rid of opening the file here, moved it elsewhere
+# Made the code use less loops.
 #
 # search method 3 uses a list of dictionary words. In this case, we have a list
 # of the 500 most commonly used passwords in 2005 as collected by Mark Burnett
@@ -242,26 +243,15 @@ def search_method_3(file_name):
     global words
     global number_of_words
     result = False
-    
-    # Start by reading the list of words into a Python list
-   
-    # We need to know how many there are
   
     print()
     print("Using method 3 with a list of "+str(number_of_words)+" words...")
-    
-    ## Depending on the file system, there may be extra characters before
-    ## or after the words. 
-  
-
     # Let's try each one as the password and see what happens
     starttime = time.time()
     tests = 0
-    still_searching = True
-    word1count = 0           # Which word we'll try next
 
-    while still_searching:
-        ourguess_pass = words[word1count]
+    for word in words:
+        ourguess_pass = word
         # uncomment the next line to print the current guess
         # print("Guessing: "+ourguess_pass)
         # Try it the way it is in the word list
@@ -285,10 +275,6 @@ def search_method_3(file_name):
             #print ("Darn. " + ourguess_pass + " is NOT the password.")
         tests = tests + 1
         totalguesses = totalguesses + 1
-
-        word1count = word1count + 1
-        if (word1count >=  number_of_words):
-            still_searching = False
 
     seconds = time.time()-starttime
     report_search_time(tests, seconds)
