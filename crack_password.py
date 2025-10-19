@@ -204,15 +204,15 @@ def search_method_2(num_pass_wheels):
     
     print(f"\nUsing optimized method 2 with {num_pass_wheels} characters.")
     
-    # Pre-optimized character set as tuple for faster access
+    #Using a tuple for faster access than a string.  It is a constant so all caps
     WHEEL = tuple(" ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
     
     starttime = time.time()
     tests = 0
-    result = False
+  
     for combination in product(WHEEL, repeat=num_pass_wheels): #Product is part of a library, and it allows for a faster iteration.
          # Skip empty password if first char is space
-        combination = combination[::-1] # Reverses the tuple because combination always generates at the end of one.
+        combination = combination[::-1] # Reverses the tuple because Product always generates at the end of one.
         if combination[0] == ' ':
             continue
         combination = filter(str.strip,combination) # gets rid of the whitespace inside of the tuple, and leaves the characters there.
@@ -225,7 +225,6 @@ def search_method_2(num_pass_wheels):
           
         tests += 1
     seconds = time.time()-starttime
-    print(time.time()-starttime)
     report_search_time(tests, seconds)
     return False
 
@@ -242,7 +241,6 @@ def search_method_3(file_name):
     global totalguesses
     global words
     global number_of_words
-    result = False
   
     print()
     print("Using method 3 with a list of "+str(number_of_words)+" words...")
@@ -278,112 +276,46 @@ def search_method_3(file_name):
 
     seconds = time.time()-starttime
     report_search_time(tests, seconds)
-    return result
+    return False
 
-# *** METHOD 4 ***     
+# *** OPTIMIZED METHOD 4 *** - Raghav    
 # Search method 4 is similar to 3 in that it uses the dictionary, but it tries two
 # two words separated by a punctuation character.
 def search_method_4(file_name):
     global totalguesses
-    result = False
-    
-    # Start by reading the list of words into a Python list
-    f = open(file_name)
-    words = f.readlines()
-    f.close
-    # We need to know how many there are
-    number_of_words = len(words)
-    
-    ## Depending on the file system, there may be extra characters before
-    ## or after the words. 
-    for i in range(0, number_of_words):
-        words[i] = cleanup(words[i])
+    global words
+    global number_of_words
 
     # Let's try each one as the password and see what happens
     starttime = time.time()
     tests = 0
     still_searching = True
-    word1count = 0           # Which word we'll try next
-    punc_count = 0
-    word2count = 0
-
-    punctuation="~!@#$%^&*()_-+={}[]:<>,./X"  # X is a special case where we omit
+    
+    PUNCTUATION = tuple("~!@#$%^&*()_-+={}[]:<>,./X ")  # X is a special case where we omit
                                               # the punctuation to run the words together
 
-    number_of_puncs = len(punctuation)
     print()
-    print("Using method 4 with "+str(number_of_puncs)+" punctuation characters and "+str(number_of_words)+" words...")
+    print("Using Optimized method 4 with "+str(len(PUNCTUATION))+" punctuation characters and "+str(number_of_words)+" words...")
 
-    while still_searching:
-        if ("X" == punctuation[punc_count]):
-            # If we're at the end of the string and found the 'X', leave it out
-            ourguess_pass = words[word1count] + words[word2count]
-        else:
-            ourguess_pass = words[word1count] + punctuation[punc_count] + words[word2count]
-        # uncomment the next line to print the current guess
-        # print("Guessing: "+ourguess_pass)
-        # Try it the way they are in the word list
+
+    for combination in product(words,PUNCTUATION,words): #Using itertools to create a combination of two words
+                                                         #separated by one piece of punctuation.
+        if combination[1] == "X": #If the punctuation is X, gets rid of the space between the two words.
+            combination = [combination[0],combination[2]]
+        ourguess_pass = ''.join(combination) #Makes the words into a string.
         if (check_userpass(which_password, ourguess_pass)):
-            print ("Success! Password "+str(which_password)+" is " + ourguess_pass)
-            still_searching = False   # we can stop now - we found it!
-            result = True
-        #else:
-            #print ("Darn. " + ourguess_pass + " is NOT the password.")
-        tests = tests + 1
-        totalguesses = totalguesses + 1
-        # Now let's try it with the first letter of the first word capitalized
-        if still_searching:
-            ourguess_pass = Cap(words[word1count]) + punctuation[punc_count] + words[word2count]
-            # uncomment the next line to print the current guess
-            # print("Guessing: "+ourguess_pass)
-            if (check_userpass(which_password, ourguess_pass)):
-                print ("Success! Passwword "+str(which_password)+" is " + ourguess_pass)
-                still_searching = False   # we can stop now - we found it!
-                result = True
-            #else:
-                #print ("Darn. " + ourguess_pass + " is NOT the password.")
-            tests = tests + 1
-            totalguesses = totalguesses + 1
-        # Now let's try it with the first letter of the second word capitalized
-        if still_searching:
-            ourguess_pass = words[word1count] + punctuation[punc_count] + Cap(words[word2count])
-            # uncomment the next line to print the current guess
-            # print("Guessing: "+ourguess_pass)
-            if (check_userpass(which_password, ourguess_pass)):
-                print ("Success! Password "+str(which_password)+" is " + ourguess_pass)
-                still_searching = False   # we can stop now - we found it!
-                result = True
-            #else:
-                #print ("Darn. " + ourguess_pass + " is NOT the password.")
-            tests = tests + 1
-            totalguesses = totalguesses + 1
-        # Now let's try it with the both words capitalized
-        if still_searching:
-            ourguess_pass = Cap(words[word1count]) + punctuation[punc_count] + Cap(words[word2count])
-            # uncomment the next line to print the current guess
-            # print("Guessing: "+ourguess_pass)
-            if (check_userpass(which_password, ourguess_pass)):
-                print ("Success! Password "+str(which_password)+" is " + ourguess_pass)
-                still_searching = False   # we can stop now - we found it!
-                result = True
-            #else:
-                #print ("Darn. " + ourguess_pass + " is NOT the password.")
-            tests = tests + 1
-            totalguesses = totalguesses + 1
-
-        word1count = word1count + 1
-        if (word1count >=  number_of_words):
-            word1count = 0
-            punc_count = punc_count + 1
-            if (punc_count >= number_of_puncs):
-                punc_count = 0
-                word2count = word2count + 1
-                if (word2count >= number_of_words):
-                    still_searching = False
+            print ("Success! Password  "+str(which_password)+" is " + ourguess_pass)
+            tests += 1
+            report_search_time(tests, time.time()-starttime)
+            return True
+        # Checks the word and returns True if guessed correctly.
+     
+        tests += 1
 
     seconds = time.time()-starttime
+    print(seconds)
     report_search_time(tests, seconds)
-    return result
+    return False
 
 
 # -------------------------- main function ----------------------------
@@ -395,7 +327,7 @@ def main(argv=None):
 
     # To test your own algorithms, change password0. This password is displayed
     # in "plaintext" so you can see the password in advance. 
-    password0 = "a1b2"
+    password0 = "qwerty123456"
     
     # These are the passwords created by Science Buddies for you to try and crack.
     # Their real text is hidden from you using something called MD5 hashing. This converts
@@ -432,8 +364,15 @@ def main(argv=None):
         print("The example code will automatically guess passwords 1-5.")
         print("It will not guess password 6 unless you make some changes to the code.")
         print()
-    which_password = int(input("Which password do you want to try to guess (0-6)? "))
-    
+    while True:
+        try:
+            which_password = int(input("Which password do you want to try to guess (0-6)? "))
+            if not(which_password <=6 and which_password >= 0):
+                print("Enter an integer from 0-6")
+                continue
+            break
+        except ValueError:
+            print("Invalid input, input an integer from 0-6")
     if 6 == which_password and show_instructions:
         print()
         print("WARNING: The example code will NOT guess password 6 on its own!")
