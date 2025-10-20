@@ -26,16 +26,7 @@ import sys, time, hashlib
 from array import *
 from itertools import product
 
-# Ask the user if they want the onscreen instructions
-yesno = input("Do you want the program to pause at each step so you have time to read the instructions? (type yes or no): ")
-if yesno == "no" or yesno == "n" or yesno == "NO" or yesno == "N":
-    show_instructions = False
-    print("Okay, then once you start the program it will run without pausing.")
-else:
-    show_instructions = True
-    print("Okay, the program will display more information as it runs and pause at each step.")
-    input("Press enter to continue.")
-    
+
 #--------------- global variables we expect will be used by any function -----------
 #
 # a number from 1 to 6 selects which password we'll be trying to guess from
@@ -349,6 +340,17 @@ def main(argv=None):
     password5="2034f6e32958647fdff75d265b455ebf"
     password6="9b3af42d61cde121f40b96097fb77d3e"
 
+
+    # Ask the user if they want the onscreen instructions
+    yesno = input("Do you want the program to pause at each step so you have time to read the instructions? (type yes or no): ")
+    if yesno == "no" or yesno == "n" or yesno == "NO" or yesno == "N":
+        show_instructions = False
+        print("Okay, then once you start the program it will run without pausing.")
+    else:
+        show_instructions = True
+        print("Okay, the program will display more information as it runs and pause at each step.")
+        input("Press enter to continue.")
+        
     # start searching
     which_password = 1
     if show_instructions:
@@ -364,6 +366,8 @@ def main(argv=None):
         print("The example code will automatically guess passwords 1-5.")
         print("It will not guess password 6 unless you make some changes to the code.")
         print()
+
+    # Raghav - Try catch for if the user enters a number outside of the range or enters in a wrong integer
     while True:
         try:
             which_password = int(input("Which password do you want to try to guess (0-6)? "))
