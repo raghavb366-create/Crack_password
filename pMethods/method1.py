@@ -1,12 +1,12 @@
 import sys, time, hashlib
 from array import *
+from pMethods.helperFunc import *
 
 # *** METHOD 1 ***
 #
 # search method 1 will try using digits as the password.
 # first it will guess 0, 1, 2, 3...9, then it will try 00, 01, 02...99, etc.
-def search_method_1(num_digits,which_password): # pass number in which_password , can define the rest in another file??
-    global totalguesses
+def search_method_1(num_digits,which_password, totalguesses): # pass number in which_password , can define the rest in another file??
     result = False
     a=0
     #num_digits = 3    # How many digits to try. 1 = 0 to 9, 2 = 00 to 99, etc.
