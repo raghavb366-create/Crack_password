@@ -1,7 +1,9 @@
 import sys, time, hashlib
 from array import *
+import sys, os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import password0
 
-password0 = "qwerty123456"
 password1="202cb962ac59075b964b07152d234b70"
 password2="570a90bfbf8c7eab5dc5d4e26832d5b1"
 password3="f78f2477e949bee2d12a2c540fb6084f"
@@ -13,13 +15,13 @@ password6="9b3af42d61cde121f40b96097fb77d3e"
 # This function checks if the MD5 hash value of the password you have guessed equals
 # the MD5 hash value of the real password.
 def check_userpass(which_password, password):
-    global password0, password1, password2, password3
+    global password1, password2, password3
     global password4, password5, password6
     
     result = False
     match which_password:
         case 0:
-            if password == password0:
+            if password == password0.password0:
                 result = True
         case 1:
             if MD5me(password) == password1:

@@ -1,0 +1,1 @@
+totalguesses = 0
