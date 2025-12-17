@@ -33,240 +33,35 @@ from pMethods.method4 import search_method_4
 import pMethods.totalguesses as totalguesses
 import password0
 
-# #--------------- global variables we expect will be used by any function -----------
-# #
-# # a number from 1 to 6 selects which password we'll be trying to guess from
-# # a selection below.
-# which_password = 0
-
-# # the user names and password we're trying to 'crack'.
-# # IMPORTANT: do not try to enter passwords to "guess" here! This part of the code
-# # is just initializing the variables. Scroll down to the "main" function at the bottom
-# # of the program, where you can edit password0 to test out different algorithms.
-# # The other passwords (1-6) were created by Science Buddies and "hidden" using
-# # something called hashing. This prevents you from "cheating" by knowing the
-# # password in advance. Read the project's procedure for more details about how hashing works.
-
-# password0 = "" # remember, do not edit password0 here! scroll down to the "main" function!
-# password1 = ""
-# password2 = ""
-# password3 = ""
-# password4 = ""
-# password5 = ""
-# password6 = ""
-
-
-# total number of guesses we had to make to find it
-
-
-
-
-# #--------------- extra helper functions -------------------
-# # These will be used by our search routines later on. We'll get these defined and out
-# # of the way. The actual search program is called "main" and will be the last one
-# # defined. Once it's defined, the last statement in the file runs it.
-# #
-
-# ## Convert a string into MD5 hash
-# def MD5me(s):
-#     result = s.encode("utf-8") #Raghav - Converts a string into a sequence of bytes using UTF-8 encoding
-#     result = hashlib.md5(result).hexdigest() #Raghav - Turns this sequence of bytes into a MD5 hash object, then returns it as a hexadecimal string.
-#     return result
-
-# # Takes a number from 0 on up and the number of digits we want it to have. It uses that
-# # number of digits to make a string like "0000" if we wanted 4 or "00000" if we wanted
-# # 5, converts our input number to a character string, sticks them together and then returns
-# # the number we started with, with extra zeroes stuck on the beginning, maxing out on the. 
-# def leading_zeroes(n, length):
-#     t=("0"*length)+str(n)
-#     t=t[-length:] #Raghav - Adds 0's behind the current string n until it reaches length.
-#     return t
-
-# # This function checks if the MD5 hash value of the password you have guessed equals
-# # the MD5 hash value of the real password.
-# def check_userpass(which_password, password):
-#     global password0, password1, password2, password3
-#     global password4, password5, password6
-    
-#     result = False
-#     match which_password:
-#         case 0:
-#             if password == password0:
-#                 result = True
-#         case 1:
-#             if MD5me(password) == password1:
-#                 result = True
-#         case 2:
-#             if (MD5me(password) == password2):
-#                 result = True
-#         case 3:
-#             if (MD5me(password) == password3):
-#                 result = True
-#         case 4:
-#             if (MD5me(password) == password4):
-#                 result = True
-#         case 5:
-#             if (MD5me(password) == password5):
-#                 result = True
-#         case 6:
-#             if (MD5me(password) == password6):
-#                 result = True
-#     return result
-
-# # This displays the results of a search including tests per second when possible
-# def report_search_time(tests, seconds):
-#     if (seconds > 0.000001):
-#         print ("The search took "+make_human_readable(seconds)+" seconds for "+make_human_readable(tests)+" tests or "+make_human_readable(tests/seconds)+" tests per second.")
-#     else:
-#         print ("The search took "+make_human_readable(seconds)+" seconds for "+make_human_readable(tests)+" tests.")
-#     return
-
-# # This function takes in numbers, rounds them to the nearest integer and puts
-# # commas in to make it more easily read by humans
-# def make_human_readable(n):
-#     if n>=1:
-#         result = ""
-#         temp=str(int(n+0.5))
-#         while temp != "":
-#             result = temp[-3:] + result
-#             temp = temp[:-3]
-#             if temp != "":
-#                 result = "," + result
-#     else:
-#         temp = int(n*100)
-#         temp = temp /100
-#         result = str(temp)
-#     return result
-        
-# ## A little helper program to remove any weird formatting in the file
-# def cleanup (s):
-#     s = s.strip()
-#     return s
-# # Opened file - Raghav, just opening the file in one place rather than in method 3 or 4 each time.
-# f = open("passwords.txt")
-# words = f.readlines()
-# f.close
-# number_of_words = len(words)
-# for i in range(0, number_of_words):
-#         words[i] = cleanup(words[i])
-
-# ## A little helper program that capitalizes the first letter of a word
-# def Cap (s):
-#     s = s.upper()[0]+s[1:]
-#     return s
-
-# --------------------- password guessing functions ----------------------------
-
-# *** METHOD 1 ***
-#
-# search method 1 will try using digits as the password.
-# first it will guess 0, 1, 2, 3...9, then it will try 00, 01, 02...99, etc.
-# def search_method_1(num_digits):
-#     global totalguesses
-#     result = False
-#     a=0
-#     #num_digits = 3    # How many digits to try. 1 = 0 to 9, 2 = 00 to 99, etc.
-#     starttime = time.time()
-#     tests = 0
-#     still_searching = True
-#     print()
-#     print("Using method 1 and searching for "+str(num_digits)+" digit numbers...")
-#     while still_searching and a<(10**num_digits):
-#         ourguess = leading_zeroes(a,num_digits)
-#         # uncomment the next line to print each guess, this can help with debugging
-#         # print(ourguess)
-#         tests = tests + 1
-#         totalguesses = totalguesses + 1
-#         if (check_userpass(which_password, ourguess)):
-#             print ("Success! Password "+str(which_password)+" is " + ourguess)
-#             still_searching = False   # we can stop now - we found it!
-#             result = True
-#         #else:
-#             #print ("Darn. " + ourguess + " is NOT the password.")
-#         a=a+1
-
-#     seconds = time.time()-starttime
-#     report_search_time(tests, seconds)
-#     return result
-
-# *** OPTIMIZED METHOD 2 - Raghav ***
-#
-# Search method 2 is a brute force using itertools, essentially looping through
-# characters from the wheel until it reaches the upper limit of the characters
-# given. Quicker than the original because of itertools product.
-
-# def search_method_2(num_pass_wheels):
-#     global totalguesses
-    
-#     print(f"\nUsing optimized method 2 with {num_pass_wheels} characters.")
-    
-#     #Using a tuple for faster access than a string.  It is a constant so all caps
-#     WHEEL = tuple(" ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
-    
-#     starttime = time.time()
-#     tests = 0
-  
-#     for combination in product(WHEEL, repeat=num_pass_wheels): #Product is part of a library, and it allows for a faster iteration.
-#          # Skip empty password if first char is space
-#         combination = combination[::-1] # Reverses the tuple because Product always generates at the end of one.
-#         if combination[0] == ' ':
-#             continue
-#         combination = filter(str.strip,combination) # gets rid of the whitespace inside of the tuple, and leaves the characters there.
-#         ourguess_pass = ''.join(combination) #Makes the tuple into a string to pass.
-#         if (check_userpass(which_password, ourguess_pass)):
-#             print ("Success! Password  "+str(which_password)+" is " + ourguess_pass)
-#             tests += 1
-#             report_search_time(tests, time.time()-starttime)
-#             return True
-          
-#         tests += 1
-#     seconds = time.time()-starttime
-#     report_search_time(tests, seconds)
-#     return False
-
-# *** METHOD 3 *** - Optimized by Raghav, got rid of opening the file here, moved it elsewhere
-# Made the code use less loops.
-#
-# search method 3 uses a list of dictionary words. In this case, we have a list
-# of the 500 most commonly used passwords in 2005 as collected by Mark Burnett
-# for his book "Perfect Passwords" (ISBN 978-1597490412). Because the list comes
-# from so many people around the world, we had to remove some of the passwords.
-# People like to use passwords that they think will shock other people, so
-# sometimes they're not fit for polite company.
-
-
-# *** OPTIMIZED METHOD 4 *** - Raghav    
-# Search method 4 is similar to 3 in that it uses the dictionary, but it tries two
-# two words separated by a punctuation character.
 
 
 # -------------------------- main function ----------------------------
 
 def main(argv=None):
 
-    # To test your own algorithms, change password0. This password is displayed
-    # in "plaintext" so you can see the password in advance. 
-    password0 = "qwerty123456"
+    # # To test your own algorithms, change password0. This password is displayed
+    # # in "plaintext" so you can see the password in advance. 
+    # password0 = "qwerty123456"
     
-    # These are the passwords created by Science Buddies for you to try and crack.
-    # Their real text is hidden from you using something called MD5 hashing. This converts
-    # the original password to a block of (seemingly) gibberish text. 
-    # You can create your own MD5 hashes using the MD5me function in this program.
-    # For example, the code
-    # password7=MD5me("ScienceBuddies")
-    # will set password7 equal to the MD5 hash value of "Science Buddies"
-    #
-    # Do NOT edit these hash values if you want to try and guess the passwords
-    # that were pre-set by Science Buddies. The example code will automatically guess
-    # passwords 1-5, so you can use them to understand how the different search methods work.
-    # It will not automatically guess password 6. You will need to make some changes to the
-    # existing methods or come up with your own algorithm to guess password 6.
-    password1="202cb962ac59075b964b07152d234b70"
-    password2="570a90bfbf8c7eab5dc5d4e26832d5b1"
-    password3="f78f2477e949bee2d12a2c540fb6084f"
-    password4="09408af74a7178e95b8ddd4e92ea4b0e"
-    password5="2034f6e32958647fdff75d265b455ebf"
-    password6="9b3af42d61cde121f40b96097fb77d3e"
+    # # These are the passwords created by Science Buddies for you to try and crack.
+    # # Their real text is hidden from you using something called MD5 hashing. This converts
+    # # the original password to a block of (seemingly) gibberish text. 
+    # # You can create your own MD5 hashes using the MD5me function in this program.
+    # # For example, the code
+    # # password7=MD5me("ScienceBuddies")
+    # # will set password7 equal to the MD5 hash value of "Science Buddies"
+    # #
+    # # Do NOT edit these hash values if you want to try and guess the passwords
+    # # that were pre-set by Science Buddies. The example code will automatically guess
+    # # passwords 1-5, so you can use them to understand how the different search methods work.
+    # # It will not automatically guess password 6. You will need to make some changes to the
+    # # existing methods or come up with your own algorithm to guess password 6.
+    # password1="202cb962ac59075b964b07152d234b70"
+    # password2="570a90bfbf8c7eab5dc5d4e26832d5b1"
+    # password3="f78f2477e949bee2d12a2c540fb6084f"
+    # password4="09408af74a7178e95b8ddd4e92ea4b0e"
+    # password5="2034f6e32958647fdff75d265b455ebf"
+    # password6="9b3af42d61cde121f40b96097fb77d3e"
 
 
     # Ask the user if they want the onscreen instructions
