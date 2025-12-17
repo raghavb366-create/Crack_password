@@ -39,30 +39,6 @@ import password0
 
 def main(argv=None):
 
-    # # To test your own algorithms, change password0. This password is displayed
-    # # in "plaintext" so you can see the password in advance. 
-    # password0 = "qwerty123456"
-    
-    # # These are the passwords created by Science Buddies for you to try and crack.
-    # # Their real text is hidden from you using something called MD5 hashing. This converts
-    # # the original password to a block of (seemingly) gibberish text. 
-    # # You can create your own MD5 hashes using the MD5me function in this program.
-    # # For example, the code
-    # # password7=MD5me("ScienceBuddies")
-    # # will set password7 equal to the MD5 hash value of "Science Buddies"
-    # #
-    # # Do NOT edit these hash values if you want to try and guess the passwords
-    # # that were pre-set by Science Buddies. The example code will automatically guess
-    # # passwords 1-5, so you can use them to understand how the different search methods work.
-    # # It will not automatically guess password 6. You will need to make some changes to the
-    # # existing methods or come up with your own algorithm to guess password 6.
-    # password1="202cb962ac59075b964b07152d234b70"
-    # password2="570a90bfbf8c7eab5dc5d4e26832d5b1"
-    # password3="f78f2477e949bee2d12a2c540fb6084f"
-    # password4="09408af74a7178e95b8ddd4e92ea4b0e"
-    # password5="2034f6e32958647fdff75d265b455ebf"
-    # password6="9b3af42d61cde121f40b96097fb77d3e"
-
 
     # Ask the user if they want the onscreen instructions
     yesno = input("Do you want the program to pause at each step so you have time to read the instructions? (type yes or no): ")
